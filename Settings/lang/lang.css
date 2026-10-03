@@ -1,0 +1,57 @@
+.lang-page{
+  max-width: 760px; width: 100%; margin: 0 auto;
+  background: var(--paper); color: #2B2620;
+  border-radius: 12px; padding: 28px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+
+.nav-btn{
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 56px; padding: 0 22px; border-radius: 10px;
+  background: #fff; color: #2B2620; border: 2px solid #8A8271;
+  text-decoration: none; cursor: pointer;
+  font-family: 'Work Sans', sans-serif; font-size: 1.15rem; font-weight: 700;
+}
+.nav-btn:hover{ background: #F1EAD9; }
+.nav-btn .arrow{ font-size: 1.4rem; line-height: 1; }
+
+a:focus-visible, button:focus-visible{ outline: 4px solid var(--yolk); outline-offset: 3px; }
+
+.page-title{ font-size: 2rem; font-weight: 700; margin: 22px 0 20px; }
+
+.lang-list{ display: flex; flex-direction: column; gap: 16px; }
+.lang-option{
+  display: flex; align-items: center; gap: 18px; width: 100%;
+  min-height: 96px; padding: 16px 20px; border-radius: 14px;
+  border: 3px solid #C8C0A8; background: #fff; color: #2B2620;
+  font-family: 'Work Sans', sans-serif; text-align: left; cursor: pointer;
+}
+.lang-option:hover{ border-color: #8A8271; }
+.lang-option.selected{ border: 6px solid #2B2620; background: #FFF8E6; box-shadow: 0 0 0 4px var(--yolk); }
+.lang-badge{
+  width: 64px; height: 64px; flex-shrink: 0; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: #2B2620; color: #FBF7EC;
+  font-family: 'Space Mono', monospace; font-size: 1.4rem; font-weight: 700;
+}
+.lang-text{ flex: 1; min-width: 0; }
+.lang-name{ display: block; font-size: 1.6rem; font-weight: 700; }
+.lang-sample{ display: block; font-size: 1.1rem; color: #4E4637; }
+.lang-option .check{
+  display: none; width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+  background: var(--leaf); color: #fff; font-size: 1.6rem; font-weight: 700;
+  align-items: center; justify-content: center;
+}
+.lang-option.selected .check{ display: flex; }
+
+.status-bar{
+  display: none; align-items: center; gap: 12px;
+  padding: 12px 16px; border-radius: 10px; margin-bottom: 20px;
+  background: #E4EFDA; color: #23361A; border: 2px solid var(--leaf);
+  font-size: 1.3rem; font-weight: 700;
+}
+.status-bar.show{ display: flex; }
+
+@media (max-width: 560px){
+  .lang-page{ padding: 18px; }
+}
