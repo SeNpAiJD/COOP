@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Coop POS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="theme-engine.js"></script>
+<script src="Settings/lang/translations.js"></script>
+<script src="Settings/lang/language-engine.js"></script>
+</head>
+<body>
+
+<div class="overlay show" id="loginOverlay">
+  <div class="login-box">
+    <h3>Cooperatives Store</h3>
+    <div class="sub" data-i18n="login.subtitle">Sign in with Google to continue</div>
+
+    <div id="googleBtnStep">
+      <div id="googleSignInBtn" class="google-signin-btn"></div>
+      <button type="button" class="mock-google-btn" id="mockGoogleBtn">
+        <span class="g-circle">G</span> <span data-i18n="login.googleBtn">Sign in with Google</span>
+      </button>
+      <button type="button" class="name-login-link" id="nameLoginLink" style="display:none;" data-i18n="login.nameInstead">Sign in with just a name instead</button>
+      <div class="login-note" id="loginNote"></div>
+    </div>
+
+    <div id="mockNameStep" style="display:none;">
+      <div class="form-field" style="text-align:left;">
+        <label for="mockUserName" data-i18n="login.yourName">Your name</label>
+        <input type="text" id="mockUserName" placeholder="e.g. Michael Adrian" data-i18n-placeholder="login.namePlaceholder">
+      </div>
+      <div class="form-error" id="mockLoginError" data-i18n="login.nameError">Please enter your name.</div>
+      <div class="form-actions">
+        <button type="button" class="btn-print" id="mockCancelBtn" data-i18n="common.back">Back</button>
+        <button type="button" class="btn-new" id="mockContinueBtn" data-i18n="login.continue">Continue</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="kiosk" id="kioskApp" style="display:none;">
+  <div class="top-actions">
+    <div class="user-badge" id="userBadge">
+      <div id="userAvatar" class="user-avatar"></div>
+      <span id="userName" class="user-name"></span>
+      <button type="button" id="signOutBtn" class="signout-btn" title="Sign out" data-i18n-title="top.signOut">⏻</button>
+    </div>
+    <a href="Settings/settings.html" id="settingsBtn" class="settings-btn" title="Settings" aria-label="Settings" data-i18n-title="top.settings" data-i18n-aria-label="top.settings">⚙</a>
+  </div>
+  <header>
+    <h1>Cooperatives Store</h1>
+    <p data-i18n="header.subtitle">Tap an item, set how many, add it to your order</p>
+  </header>
+
+  <nav class="view-tabs">
+    <button class="tab-btn active" id="tabOrder" data-i18n="tabs.order">🛒 Order Kiosk</button>
+    <button class="tab-btn" id="tabManage" data-i18n="tabs.manage">🛠 Manage Products</button>
+    <button class="tab-btn" id="tabPromos" data-i18n="tabs.promos">🏷 Manage Promos</button>
+  </nav>
+
+  <div class="view active" id="kioskView">
+    <div class="layout">
+      <div class="product-grid" id="productGrid"></div>
+
+      <div class="order-panel">
+        <h2>Your Order</h2>
+        <ul class="order-list" id="orderList">
+          <li class="empty-msg">Nothing added yet</li>
+        </ul>
+
+        <div class="discount-block">
+          <button type="button" class="discount-toggle-btn" id="discountToggleBtn">+ Add Discount</button>
+          <div class="discount-form" id="discountForm" style="display:none;">
+            <div class="discount-type-tabs">
+              <button type="button" class="dtab active" id="dtabPercent">%</button>
+              <button type="button" class="dtab" id="dtabFixed">₱</button>
+            </div>
+            <input type="number" id="discountValue" min="0" step="0.01" placeholder="e.g. 10">
+            <div class="quick-discounts" id="quickDiscounts"></div>
+            <div class="discount-actions">
+              <button type="button" class="btn-print" id="cancelDiscountBtn">Cancel</button>
+              <button type="button" class="btn-new" id="applyDiscountBtn">Apply</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="totals">
+          <div class="row" id="subtotalRow">
+            <span>Subtotal</span>
+            <span id="subtotalAmount">₱0.00</span>
+          </div>
+          <div class="row discount-row" id="discountRow" style="display:none;">
+            <span id="discountLabel">Discount</span>
+            <span>
+              <span id="discountAmountDisplay">–₱0.00</span>
+              <button type="button" class="remove-discount-btn" id="removeDiscountBtn">remove</button>
+            </span>
+          </div>
+          <div class="row grand">
+            <span>Total</span>
+            <span id="totalAmount">₱0.00</span>
+          </div>
+        </div>
+        <button class="checkout-btn" id="checkoutBtn" disabled>Checkout &amp; Print Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="view" id="manageView">
+    <div class="manage-layout">
+
+      <div class="manage-panel">
+        <h2><span data-i18n="products.title">Products</span> <button id="addNewBtn" data-i18n="products.addNew">+ Add New</button></h2>
+        <div class="manage-list" id="manageList"></div>
+      </div>
+
+      <div class="manage-panel" id="formPanel" style="display:none;">
+        <h2 id="formTitle" data-i18n="products.add">Add Product</h2>
+
+        <div class="form-field">
+          <label for="pName" data-i18n="products.name">Name</label>
+          <input type="text" id="pName" placeholder="e.g. Sweet Corn" data-i18n-placeholder="products.namePlaceholder">
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="pPrice" data-i18n="products.price">Price (₱)</label>
+            <input type="number" id="pPrice" min="0" step="0.01" placeholder="60.00">
+          </div>
+          <div class="form-field">
+            <label for="pUnit" data-i18n="products.unit">Sold per</label>
+            <input type="text" id="pUnit" placeholder="e.g. kg, piece, bundle" data-i18n-placeholder="products.unitPlaceholder">
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label data-i18n="products.picture">Picture</label>
+          <div class="icon-source-tabs">
+            <button type="button" class="source-tab active" id="srcIconTab" data-i18n="products.chooseIcon">Choose an icon</button>
+            <button type="button" class="source-tab" id="srcImageTab" data-i18n="products.uploadPhoto">Upload a photo</button>
+          </div>
+
+          <div id="iconPickerBlock">
+            <div class="icon-choices" id="iconChoices"></div>
+          </div>
+
+          <div id="imageUploadBlock" style="display:none;">
+            <div class="image-upload-box">
+              <input type="file" id="imageUpload" accept="image/*">
+              <div class="image-preview" id="imagePreview"><img id="imagePreviewImg" alt=""></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-error" id="formError" data-i18n="products.errorFields">Please fill in a name, price, and unit.</div>
+
+        <div class="form-actions">
+          <button class="btn-print" id="cancelFormBtn" data-i18n="common.cancel">Cancel</button>
+          <button class="btn-new" id="saveProductBtn" data-i18n="products.save">Save Product</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="view" id="promosView">
+    <div class="manage-layout">
+
+      <div class="manage-panel">
+        <h2><span data-i18n="promos.title">Promos</span> <button id="addPromoBtn" data-i18n="products.addNew">+ Add New</button></h2>
+        <div class="manage-list" id="promoList"></div>
+      </div>
+
+      <div class="manage-panel" id="promoFormPanel" style="display:none;">
+        <h2 id="promoFormTitle" data-i18n="promos.add">Add Promo</h2>
+
+        <div class="form-field">
+          <label for="promoName" data-i18n="promos.name">Promo Name</label>
+          <input type="text" id="promoName" placeholder="e.g. Senior/PWD, Founding Anniversary" data-i18n-placeholder="promos.namePlaceholder">
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label data-i18n="promos.type">Type</label>
+            <div class="icon-source-tabs">
+              <button type="button" class="source-tab active" id="promoTabPercent">%</button>
+              <button type="button" class="source-tab" id="promoTabFixed">₱</button>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="promoValue" id="promoValueLabel" data-i18n="promos.percentOff">Percent Off</label>
+            <input type="number" id="promoValue" min="0" step="0.01" placeholder="e.g. 20" data-i18n-placeholder="promos.examplePercent">
+          </div>
+        </div>
+
+        <div class="form-error" id="promoFormError" data-i18n="promos.error">Please give the promo a name and a value.</div>
+
+        <div class="form-actions">
+          <button class="btn-print" id="cancelPromoBtn" data-i18n="common.cancel">Cancel</button>
+          <button class="btn-new" id="savePromoBtn" data-i18n="promos.save">Save Promo</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="overlay" id="paymentOverlay">
+  <div class="receipt" id="paymentBox">
+    <h3 data-i18n="payment.title">Payment</h3>
+    <div class="sub" data-i18n="payment.subtitle">Enter cash received</div>
+
+    <div class="r-line r-grand" style="margin-bottom:14px;">
+      <span data-i18n="payment.amountDue">Amount Due</span>
+      <span id="payDue">₱0.00</span>
+    </div>
+
+    <div class="form-field">
+      <label for="cashReceivedInput" data-i18n="payment.cashReceived">Cash Received (₱)</label>
+      <input type="number" id="cashReceivedInput" min="0" step="0.01" placeholder="0.00">
+    </div>
+
+    <div class="quick-cash" id="quickCash"></div>
+
+    <div class="r-totals" style="margin-top:14px;">
+      <div class="r-line" id="changeRow">
+        <span id="changeLabel" data-i18n="payment.change">Change</span>
+        <span id="changeAmount">₱0.00</span>
+      </div>
+    </div>
+
+    <div class="form-error" id="paymentError" data-i18n="payment.error">Cash received is less than the amount due.</div>
+
+    <div class="overlay-actions">
+      <button class="btn-print" id="cancelPaymentBtn" data-i18n="common.cancel">Cancel</button>
+      <button class="btn-new" id="confirmPaymentBtn" disabled data-i18n="payment.confirm">Confirm Payment</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="receipt" id="receiptBox">
+    <h3>Cooperatives Store</h3>
+    <div class="sub">Fresh goods, honest prices</div>
+    <div class="meta" id="receiptMeta"></div>
+    <div id="receiptLines"></div>
+    <div class="r-totals">
+      <div class="r-line" id="receiptSubtotalRow">
+        <span>Subtotal</span>
+        <span id="receiptSubtotal">₱0.00</span>
+      </div>
+      <div class="r-line" id="receiptDiscountRow" style="display:none;">
+        <span id="receiptDiscountLabel">Discount</span>
+        <span id="receiptDiscountAmount">–₱0.00</span>
+      </div>
+      <div class="r-line r-grand">
+        <span>TOTAL</span>
+        <span id="receiptTotal">₱0.00</span>
+      </div>
+      <div class="r-line" id="receiptCashRow">
+        <span>Cash Received</span>
+        <span id="receiptCash">₱0.00</span>
+      </div>
+      <div class="r-line" id="receiptChangeRow">
+        <span>Change</span>
+        <span id="receiptChange">₱0.00</span>
+      </div>
+    </div>
+    <div class="thanks">Thanks for stopping by!</div>
+    <div class="overlay-actions">
+      <button class="btn-print" id="printBtn">Print</button>
+      <button class="btn-new" id="newOrderBtn">New Order</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="script.js"></script>
+
+</body>
+</html>
