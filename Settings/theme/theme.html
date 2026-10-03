@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theme — Coop POS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="theme.css">
+<script src="../../theme-engine.js"></script>
+<script src="../lang/translations.js"></script>
+<script src="../lang/language-engine.js"></script>
+</head>
+<body>
+
+<div class="kiosk">
+  <main class="theme-page">
+
+    <a href="../settings.html" class="nav-btn"><span class="arrow">←</span> <span data-i18n="common.back">Back</span></a>
+
+    <h1 class="page-title" data-i18n="theme.title">Background Color</h1>
+
+    <div class="status-bar" id="statusBar" role="status" aria-live="polite">
+      <span data-i18n="common.saved">✓ Saved</span>
+      <button type="button" class="nav-btn" id="undoBtn" data-i18n="theme.undo">↶ Undo</button>
+    </div>
+
+    <div class="swatch-grid" id="swatchGrid"></div>
+
+  </main>
+</div>
+
+<script src="theme.js"></script>
+
+</body>
+</html>
